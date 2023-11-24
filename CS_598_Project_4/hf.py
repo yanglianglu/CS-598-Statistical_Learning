@@ -123,7 +123,8 @@ def parse_columns(df):
 def get_movie_info(movie_name, year):
     # input is a movie id
     # output is a list of movie info
-    api_key = open('data/api_key').read()
+    dir = Path(__file__).parent.absolute()
+    api_key = open(str(dir) + '/data/api_key').read()
     data_url = 'http://www.omdbapi.com/?apikey=' + api_key + '&'
     poster_url = 'http://img.omdbapi.com/?apikey=' + api_key + '&'
     data_url = data_url + 't=' + movie_name + '&y=' + year
