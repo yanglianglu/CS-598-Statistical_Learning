@@ -3,13 +3,21 @@ import pandas as pd
 import streamlit as st
 import requests
 import scipy.sparse as sparse
+from pathlib import Path
 
 
 @st.cache_data
 def load_data():
-    ratings = pd.read_csv('data/ratings.dat', sep='::', engine='python', header=None)
+    # use absolute path
+    dir = Path(__file__).parent.absolute()
+
+    rating_path = dir / 'data/ratings.dat'
+    movie_path = dir / 'data/movies.dat'
+    print(movie_path)
+
+    ratings = pd.read_csv(rating_path, sep='::', engine='python', header=None, )
     ratings.columns = ['UserID', 'MovieID', 'Rating', 'Timestamp']
-    movies = pd.read_csv('data/movies.dat', sep='::', engine='python', encoding="ISO-8859-1", header=None)
+    movies = pd.read_csv(fr'{movie_path}', sep='::', engine='python', header=None, encoding="ISO-8859-1")
     movies.columns = ['MovieID', 'Title', 'Genres']
     return ratings, movies
 
@@ -178,7 +186,8 @@ def get_best_movies(movies, ratings, genres):
 @st.cache_data
 def read_sparse_matrix():
     # read sparse matrix
-    sparse_matrix = sparse.load_npz('data/similarity_matrix.npz')
+    dir = Path(__file__).parent.absolute()
+    sparse_matrix = sparse.load_npz(str(dir) + '/data/similarity_matrix.npz')
     return sparse_matrix
 
 
