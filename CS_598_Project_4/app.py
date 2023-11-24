@@ -8,7 +8,7 @@ genres = genres_matrix(movies)
 
 path = Path(__file__).parent.absolute()
 genres_path = path / 'data/genres.json'
-genre_list = json.loads(open(path).read())
+genre_list = json.loads(open(genres_path).read())
 best_movies = get_best_movies(movies, ratings, genres)
 similarity_matrix = read_sparse_matrix()
 # Set the title of the app
