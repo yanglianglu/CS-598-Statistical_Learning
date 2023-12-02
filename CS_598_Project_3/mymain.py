@@ -92,7 +92,7 @@ model.fit(dtm_train, train_label)
 from sklearn.metrics import roc_auc_score
 
 pred = model.predict_proba(dtm_test)[:, 1]
-print(roc_auc_score(test_label, pred))
+# print(roc_auc_score(test_label, pred))
 
 vocab = pd.read_csv('myvocab.txt', sep='\t')
 
@@ -126,20 +126,14 @@ def fit_vectorizer(train_review, test_review, vocab):
 
 from sklearn.metrics import roc_auc_score
 from sklearn.linear_model import LogisticRegressionCV
-def score(train_review, train_label, test_review, test_label):
-    # fit with logistic regression for classification
-    from sklearn.metrics import accuracy_score
 
-    model = LogisticRegressionCV(cv=5, max_iter=10000, n_jobs=-1)
-    model.fit(train_review, train_label)
-    # calculate AUC score
-    pred = model.predict_proba(test_review)
-
-    return roc_auc_score(test_label, pred[:, 1]), pred[:, 1]
-
+from sklearn.metrics import accuracy_score
 
 train_score, test_score = fit_vectorizer(train_review.copy(), test_review.copy(), vocab)
-auc, pred = score(train_score, train_label, test_score, test_label)
+model = LogisticRegressionCV(cv=5, max_iter=10000, n_jobs=-1)
+model.fit(train_score, train_label)
+
+pred = model.predict_proba(test_score)[:, 1]
 
 import csv
 csv_file_path = "mysubmission.csv"
