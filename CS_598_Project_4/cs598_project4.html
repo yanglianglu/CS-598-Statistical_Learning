@@ -7494,7 +7494,6 @@ a.anchor-link {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <h1 id="Project-4">Project 4<a class="anchor-link" href="#Project-4">¶</a></h1><h2 id="Student-Names-and-IDs">Student Names and IDs<a class="anchor-link" href="#Student-Names-and-IDs">¶</a></h2><ul>
-<li>Zeyu Liao(zeyu9, 667691486, MCS)</li>
 <li>Lu,Yangliang (yl164 661963604 MCS)</li>
 <li>Yan, Zexi (zexiyan2, 651826615 MCS)</li>
 </ul>
@@ -7520,12 +7519,790 @@ a.anchor-link {
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
 <p>System I recommend movies based on movie's ranking in user's selected genre. Here is the definition of "ranking score":</p>
-<ul>
-<li>score = 1/3 of popularity + 2/3 of weighted rating</li>
-<li>popularity is determined by the number of rating a movie has received.</li>
-<li>weighted rating is a scaled rating so that .....</li>
+<h2 id="Popularity-and-Rating-Calculations">Popularity and Rating Calculations<a class="anchor-link" href="#Popularity-and-Rating-Calculations">¶</a></h2><ul>
+<li><h3 id="Most-Watched-Movies-(most_watched_movies-function):-Calculates-the-most-watched-movies-within-a-genre-based-on-the-count-of-ratings-and-scales-the-counts-between-0-and-1.">Most Watched Movies (most_watched_movies function): Calculates the most watched movies within a genre based on the count of ratings and scales the counts between 0 and 1.<a class="anchor-link" href="#Most-Watched-Movies-(most_watched_movies-function):-Calculates-the-most-watched-movies-within-a-genre-based-on-the-count-of-ratings-and-scales-the-counts-between-0-and-1.">¶</a></h3></li>
 </ul>
-<hr/>
+<h4 id="Formula-Components">Formula Components<a class="anchor-link" href="#Formula-Components">¶</a></h4><p><strong>R</strong>: The average rating for each movie.
+<strong>v</strong>: The number of ratings for each movie.
+<strong>m</strong>: A minimum number of ratings required for the movie to be considered in the ranking. This is a threshold to ensure that movies included in the ranking have a sufficient number of ratings to make their average rating reliable.
+<strong>C</strong>: The mean rating across the whole report or dataset.</p>
+<h4 id="Weighted-Rating-Formula">Weighted Rating Formula<a class="anchor-link" href="#Weighted-Rating-Formula">¶</a></h4><p>$$  \text{Weighted Rating (WR)} = \left( \frac{v}{v + m} \right) \times R + \left( \frac{m}{v + m} \right) \times C  $$</p>
+<h4 id="Purpose">Purpose<a class="anchor-link" href="#Purpose">¶</a></h4><h4 id="The-purpose-of-this-formula-is-to-provide-a-fair-and-balanced-rating-that-considers-both-the-quality-of-the-movie-(as-perceived-by-its-average-rating)-and-the-quantity-of-ratings-it-has-received.">The purpose of this formula is to provide a fair and balanced rating that considers both the quality of the movie (as perceived by its average rating) and the quantity of ratings it has received.<a class="anchor-link" href="#The-purpose-of-this-formula-is-to-provide-a-fair-and-balanced-rating-that-considers-both-the-quality-of-the-movie-(as-perceived-by-its-average-rating)-and-the-quantity-of-ratings-it-has-received.">¶</a></h4><ul>
+<li><h3 id="Highly-Rated-Movies-(highly_rated_movies-function):-Implements-a-weighted-rating-formula-to-find-highly-rated-movies.-It-scales-the-weighted-ratings-between-0-and-1.">Highly Rated Movies (highly_rated_movies function): Implements a weighted rating formula to find highly rated movies. It scales the weighted ratings between 0 and 1.<a class="anchor-link" href="#Highly-Rated-Movies-(highly_rated_movies-function):-Implements-a-weighted-rating-formula-to-find-highly-rated-movies.-It-scales-the-weighted-ratings-between-0-and-1.">¶</a></h3></li>
+</ul>
+<h2 id="Ranking-System">Ranking System<a class="anchor-link" href="#Ranking-System">¶</a></h2><h2 id="Ranking-Function-(ranking-function):-Combines-the-popularity-and-weighted-rating-to-give-a-final-score-to-each-movie.-The-final-ranking-is-based-on-this-score,-and-the-function-returns-the-top-N-movies.">Ranking Function (ranking function): Combines the popularity and weighted rating to give a final score to each movie. The final ranking is based on this score, and the function returns the top N movies.<a class="anchor-link" href="#Ranking-Function-(ranking-function):-Combines-the-popularity-and-weighted-rating-to-give-a-final-score-to-each-movie.-The-final-ranking-is-based-on-this-score,-and-the-function-returns-the-top-N-movies.">¶</a></h2>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">ratings</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">'data/ratings.dat'</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">'::'</span><span class="p">,</span> <span class="n">engine</span> <span class="o">=</span> <span class="s1">'python'</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<span class="n">ratings</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'UserID'</span><span class="p">,</span> <span class="s1">'MovieID'</span><span class="p">,</span> <span class="s1">'Rating'</span><span class="p">,</span> <span class="s1">'Timestamp'</span><span class="p">]</span>
+<span class="n">movies</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">'data/movies.dat'</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">'::'</span><span class="p">,</span> <span class="n">engine</span> <span class="o">=</span> <span class="s1">'python'</span><span class="p">,</span>
+                     <span class="n">encoding</span><span class="o">=</span><span class="s2">"ISO-8859-1"</span><span class="p">,</span> <span class="n">header</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>
+<span class="n">movies</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'MovieID'</span><span class="p">,</span> <span class="s1">'Title'</span><span class="p">,</span> <span class="s1">'Genres'</span><span class="p">]</span>
+<span class="n">users</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">'data/users.dat'</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">'::'</span><span class="p">,</span> <span class="n">engine</span> <span class="o">=</span> <span class="s1">'python'</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">genres_matrix</span><span class="p">(</span><span class="n">movies</span><span class="p">):</span>
+    <span class="n">genres</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">movies</span><span class="p">)):</span>
+        <span class="n">genres</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">movies</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">'Genres'</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'|'</span><span class="p">))</span>
+    <span class="n">genres</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">genres</span><span class="p">))</span>
+    <span class="n">genres</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+    <span class="n">genres_matrix</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">columns</span> <span class="o">=</span> <span class="n">genres</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">movies</span><span class="p">)):</span>
+        <span class="n">genres_matrix</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">genres</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">genre</span> <span class="ow">in</span> <span class="n">movies</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">'Genres'</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">'|'</span><span class="p">):</span>
+            <span class="n">genres_matrix</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">genre</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">genres_matrix</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">movies</span><span class="p">[</span><span class="s1">'MovieID'</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">genres_matrix</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># using genres matrix to filter movies base on user input</span>
+<span class="n">genres</span> <span class="o">=</span> <span class="n">genres_matrix</span><span class="p">(</span><span class="n">movies</span><span class="p">)</span>
+<span class="n">genres</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[5]:</div>
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>Action</th>
+<th>Adventure</th>
+<th>Animation</th>
+<th>Children's</th>
+<th>Comedy</th>
+<th>Crime</th>
+<th>Documentary</th>
+<th>Drama</th>
+<th>Fantasy</th>
+<th>Film-Noir</th>
+<th>Horror</th>
+<th>Musical</th>
+<th>Mystery</th>
+<th>Romance</th>
+<th>Sci-Fi</th>
+<th>Thriller</th>
+<th>War</th>
+<th>Western</th>
+</tr>
+<tr>
+<th>MovieID</th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>1</th>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<th>2</th>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<th>3</th>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<th>4</th>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<th>5</th>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">subset_movies</span><span class="p">(</span><span class="n">ratings_df</span><span class="p">,</span> <span class="n">genre_df</span><span class="p">,</span> <span class="n">genre</span><span class="p">):</span>
+    <span class="c1"># giving a genre, return a subset of movies that are in that genre</span>
+    <span class="n">genre_movies</span> <span class="o">=</span> <span class="n">genre_df</span><span class="p">[</span><span class="n">genre_df</span><span class="p">[</span><span class="n">genre</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+
+    <span class="n">genre_index</span> <span class="o">=</span> <span class="n">genre_movies</span><span class="o">.</span><span class="n">index</span>
+    <span class="n">ratings_df</span> <span class="o">=</span> <span class="n">ratings_df</span><span class="p">[</span><span class="n">ratings_df</span><span class="p">[</span><span class="s1">'MovieID'</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">genre_index</span><span class="p">)]</span>
+    <span class="n">rating_matrix</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">pivot_table</span><span class="p">(</span><span class="n">ratings_df</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="s1">'Rating'</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s1">'UserID'</span><span class="p">],</span>
+                                   <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">'MovieID'</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">rating_matrix</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">subset</span> <span class="o">=</span> <span class="n">subset_movies</span><span class="p">(</span><span class="n">ratings</span><span class="p">,</span> <span class="n">genres</span><span class="p">,</span> <span class="s1">'Action'</span><span class="p">)</span>
+<span class="n">genre_rating</span> <span class="o">=</span> <span class="n">subset</span>
+<span class="n">genre_rating</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[7]:</div>
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th>MovieID</th>
+<th>6</th>
+<th>9</th>
+<th>10</th>
+<th>15</th>
+<th>20</th>
+<th>21</th>
+<th>42</th>
+<th>44</th>
+<th>70</th>
+<th>71</th>
+<th>...</th>
+<th>3807</th>
+<th>3827</th>
+<th>3836</th>
+<th>3841</th>
+<th>3864</th>
+<th>3877</th>
+<th>3879</th>
+<th>3889</th>
+<th>3898</th>
+<th>3946</th>
+</tr>
+<tr>
+<th>UserID</th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>1</th>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>...</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr>
+<th>2</th>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>1.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>...</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr>
+<th>3</th>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>...</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr>
+<th>4</th>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>...</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr>
+<th>5</th>
+<td>2.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>...</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+</tbody>
+</table>
+<p>5 rows × 495 columns</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [8]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">most_watched_movies</span><span class="p">(</span><span class="n">genre_rating</span><span class="p">):</span>
+    <span class="c1"># return a list of most watched movies</span>
+    <span class="c1"># input is a rating matrix</span>
+    <span class="c1"># output is a list of movie ids</span>
+    <span class="n">movie_count</span> <span class="o">=</span> <span class="n">genre_rating</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+    <span class="n">movie_count</span> <span class="o">=</span> <span class="n">movie_count</span>
+    <span class="c1"># scale to 0 to 1</span>
+    <span class="n">movie_count</span> <span class="o">=</span> <span class="n">movie_count</span><span class="o">/</span><span class="n">movie_count</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+    <span class="n">movie_count</span> <span class="o">=</span> <span class="n">movie_count</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s1">'popularity'</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">movie_count</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [9]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">most_watched_movies</span><span class="p">(</span><span class="n">genre_rating</span><span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[9]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
+<pre>MovieID
+260     1.000000
+1196    0.999666
+1210    0.963892
+480     0.893347
+2028    0.886994
+589     0.885657
+2571    0.865931
+1580    0.848546
+1198    0.840522
+110     0.816784
+Name: popularity, dtype: float64</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [10]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">highly_rated_movies</span><span class="p">(</span><span class="n">genre_rating</span><span class="p">):</span>
+    <span class="c1"># return a list of highly rated movies</span>
+    <span class="c1"># input is a rating matrix</span>
+    <span class="c1"># output is a list of movie ids</span>
+    <span class="c1"># using Weighted Rating (WR) = (v / (v+m)) × R + (m / (v+m)) × C</span>
+    <span class="n">mean</span> <span class="o">=</span> <span class="n">genre_rating</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="n">v</span> <span class="o">=</span> <span class="n">genre_rating</span><span class="o">.</span><span class="n">count</span><span class="p">()</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="mi">300</span>
+    <span class="n">C</span> <span class="o">=</span> <span class="n">mean</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="n">wr</span> <span class="o">=</span> <span class="p">(</span><span class="n">v</span><span class="o">/</span><span class="p">(</span><span class="n">v</span><span class="o">+</span><span class="n">m</span><span class="p">))</span><span class="o">*</span><span class="n">mean</span> <span class="o">+</span> <span class="p">(</span><span class="n">m</span><span class="o">/</span><span class="p">(</span><span class="n">v</span><span class="o">+</span><span class="n">m</span><span class="p">))</span><span class="o">*</span><span class="n">C</span>
+    <span class="c1"># scale to 0 to 1</span>
+    <span class="n">wr</span> <span class="o">=</span> <span class="n">wr</span><span class="o">/</span><span class="n">wr</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+    <span class="n">wr</span> <span class="o">=</span> <span class="n">wr</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s1">'rating'</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">wr</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [11]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">highly_rated_movies</span><span class="p">(</span><span class="n">genre_rating</span><span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[11]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/plain" tabindex="0">
+<pre>MovieID
+858     1.000000
+1198    0.994337
+260     0.994217
+2028    0.966971
+2571    0.961912
+1196    0.960672
+1221    0.956970
+1197    0.956433
+110     0.943819
+2019    0.938577
+Name: rating, dtype: float64</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [12]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">ranking</span><span class="p">(</span><span class="n">genre_rating</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+    <span class="c1"># return a list of movies that are ranked by most watched and highly rated</span>
+    <span class="c1"># input is a rating matrix</span>
+    <span class="c1"># output is a list of movie ids</span>
+    <span class="n">movie_count</span> <span class="o">=</span> <span class="n">most_watched_movies</span><span class="p">(</span><span class="n">genre_rating</span><span class="p">)</span>
+    <span class="n">wr</span> <span class="o">=</span> <span class="n">highly_rated_movies</span><span class="p">(</span><span class="n">genre_rating</span><span class="p">)</span>
+    <span class="n">rank</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">movie_count</span><span class="p">,</span> <span class="n">wr</span><span class="p">,</span> <span class="n">left_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="c1"># popularity count 1/3, rating 2/3</span>
+    <span class="n">rank</span><span class="p">[</span><span class="s1">'score'</span><span class="p">]</span> <span class="o">=</span> <span class="n">rank</span><span class="p">[</span><span class="s1">'popularity'</span><span class="p">]</span><span class="o">/</span><span class="mi">3</span> <span class="o">+</span> <span class="n">rank</span><span class="p">[</span><span class="s1">'rating'</span><span class="p">]</span><span class="o">*</span><span class="mi">2</span><span class="o">/</span><span class="mi">3</span>
+    <span class="c1"># scale</span>
+    <span class="n">rank</span><span class="p">[</span><span class="s1">'score'</span><span class="p">]</span> <span class="o">=</span> <span class="n">rank</span><span class="p">[</span><span class="s1">'score'</span><span class="p">]</span><span class="o">/</span><span class="n">rank</span><span class="p">[</span><span class="s1">'score'</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">rank</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span> <span class="o">=</span> <span class="s1">'score'</span><span class="p">,</span> <span class="n">ascending</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [13]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">top_10_action_movie_id</span> <span class="o">=</span> <span class="n">ranking</span><span class="p">(</span><span class="n">genre_rating</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">index</span> <span class="o">=</span> <span class="n">top_10_action_movie_id</span><span class="o">.</span><span class="n">index</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [14]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># return a list of movies that are ranked by most watched and highly rated</span>
+<span class="n">action_movie</span> <span class="o">=</span> <span class="n">movies</span><span class="p">[</span><span class="n">movies</span><span class="p">[</span><span class="s1">'MovieID'</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">index</span><span class="p">)]</span>
+<span class="n">action_movie</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[14]:</div>
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
+<div>
+<style scoped="">
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+<thead>
+<tr style="text-align: right;">
+<th></th>
+<th>MovieID</th>
+<th>Title</th>
+<th>Genres</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th>108</th>
+<td>110</td>
+<td>Braveheart (1995)</td>
+<td>Action|Drama|War</td>
+</tr>
+<tr>
+<th>257</th>
+<td>260</td>
+<td>Star Wars: Episode IV - A New Hope (1977)</td>
+<td>Action|Adventure|Fantasy|Sci-Fi</td>
+</tr>
+<tr>
+<th>585</th>
+<td>589</td>
+<td>Terminator 2: Judgment Day (1991)</td>
+<td>Action|Sci-Fi|Thriller</td>
+</tr>
+<tr>
+<th>847</th>
+<td>858</td>
+<td>Godfather, The (1972)</td>
+<td>Action|Crime|Drama</td>
+</tr>
+<tr>
+<th>1178</th>
+<td>1196</td>
+<td>Star Wars: Episode V - The Empire Strikes Back...</td>
+<td>Action|Adventure|Drama|Sci-Fi|War</td>
+</tr>
+<tr>
+<th>1179</th>
+<td>1197</td>
+<td>Princess Bride, The (1987)</td>
+<td>Action|Adventure|Comedy|Romance</td>
+</tr>
+<tr>
+<th>1180</th>
+<td>1198</td>
+<td>Raiders of the Lost Ark (1981)</td>
+<td>Action|Adventure</td>
+</tr>
+<tr>
+<th>1192</th>
+<td>1210</td>
+<td>Star Wars: Episode VI - Return of the Jedi (1983)</td>
+<td>Action|Adventure|Romance|Sci-Fi|War</td>
+</tr>
+<tr>
+<th>1959</th>
+<td>2028</td>
+<td>Saving Private Ryan (1998)</td>
+<td>Action|Drama|War</td>
+</tr>
+<tr>
+<th>2502</th>
+<td>2571</td>
+<td>Matrix, The (1999)</td>
+<td>Action|Sci-Fi|Thriller</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -7566,10 +8343,10 @@ a.anchor-link {
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-python"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
@@ -7630,10 +8407,10 @@ Mounted at /content/drive
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-python"><pre><span></span><span class="n">ratings</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">ratings_path</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">'::'</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">'python'</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">ratings</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">ratings_path</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">'::'</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">'python'</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
 <span class="n">ratings</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'UserID'</span><span class="p">,</span> <span class="s1">'MovieID'</span><span class="p">,</span> <span class="s1">'Rating'</span><span class="p">,</span> <span class="s1">'Timestamp'</span><span class="p">]</span>
 
 <span class="n">movies</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">movies_path</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s1">'::'</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s1">'python'</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">"ISO-8859-1"</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
@@ -7665,10 +8442,10 @@ Mounted at /content/drive
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-python"><pre><span></span><span class="c1"># get intersection of two tensors</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># get intersection of two tensors</span>
 <span class="k">def</span> <span class="nf">intersect1d_torch</span><span class="p">(</span><span class="n">tensor1</span><span class="p">,</span> <span class="n">tensor2</span><span class="p">):</span>
     <span class="c1"># Find unique elements in each tensor</span>
     <span class="n">unique1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">tensor1</span><span class="p">)</span>
@@ -7688,10 +8465,10 @@ Mounted at /content/drive
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-python"><pre><span></span><span class="c1"># compute similarity matrix by tensors</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># compute similarity matrix by tensors</span>
 <span class="k">def</span> <span class="nf">compute_similarity_matrix_tensor</span><span class="p">(</span><span class="n">rating</span><span class="p">,</span> <span class="n">min_common_users</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">top_n</span> <span class="o">=</span> <span class="mi">10</span><span class="p">):</span>
     <span class="n">min_common_users</span> <span class="o">=</span> <span class="n">min_common_users</span>
     <span class="n">top_n</span> <span class="o">=</span> <span class="n">top_n</span>
@@ -7752,10 +8529,10 @@ Mounted at /content/drive
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-python"><pre><span></span><span class="n">specified_movies</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">1510</span><span class="p">,</span> <span class="mi">260</span><span class="p">,</span> <span class="mi">3212</span><span class="p">]</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">specified_movies</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">1510</span><span class="p">,</span> <span class="mi">260</span><span class="p">,</span> <span class="mi">3212</span><span class="p">]</span>
 <span class="n">full_similarity_matrix</span> <span class="o">=</span> <span class="n">compute_similarity_matrix_tensor</span><span class="p">(</span><span class="n">normalized_ratings</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">full_similarity_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
 <span class="c1">#print(reduced_similarity_matrix)</span>
@@ -7792,10 +8569,10 @@ MovieID
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-python"><pre><span></span><span class="c1">### Save the Similarity Matrix online</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1">### Save the Similarity Matrix online</span>
 </pre></div>
 </div>
 </div>
@@ -7806,10 +8583,10 @@ MovieID
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [8]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-python"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">savez</span><span class="p">(</span><span class="s1">'similarity_matrix_raw.npz'</span><span class="p">,</span> <span class="n">matrix</span><span class="o">=</span><span class="n">full_similarity_matrix</span><span class="p">)</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">savez</span><span class="p">(</span><span class="s1">'similarity_matrix_raw.npz'</span><span class="p">,</span> <span class="n">matrix</span><span class="o">=</span><span class="n">full_similarity_matrix</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -7831,10 +8608,10 @@ MovieID
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [11]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-python"><pre><span></span><span class="c1"># Filter the top_n most similar movies for each movie (row)</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># Filter the top_n most similar movies for each movie (row)</span>
 <span class="n">top_n</span> <span class="o">=</span> <span class="mi">30</span>
 <span class="n">similarity_matrix_top30_df</span> <span class="o">=</span> <span class="n">full_similarity_matrix</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">similarity_matrix_top30_df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
@@ -7885,10 +8662,10 @@ MovieID
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [12]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-python"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">savez</span><span class="p">(</span><span class="s1">'similarity_matrix_top30.npz'</span><span class="p">,</span> <span class="n">matrix</span><span class="o">=</span><span class="n">similarity_matrix_top30_df</span><span class="p">)</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">savez</span><span class="p">(</span><span class="s1">'similarity_matrix_top30.npz'</span><span class="p">,</span> <span class="n">matrix</span><span class="o">=</span><span class="n">similarity_matrix_top30_df</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -7910,10 +8687,10 @@ MovieID
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [13]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-python"><pre><span></span><span class="k">def</span> <span class="nf">recommend_movies</span><span class="p">(</span><span class="n">user_rating</span><span class="p">,</span> <span class="n">s_matrix</span><span class="p">,</span> <span class="n">n_recommendations</span> <span class="o">=</span> <span class="mi">10</span><span class="p">):</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">recommend_movies</span><span class="p">(</span><span class="n">user_rating</span><span class="p">,</span> <span class="n">s_matrix</span><span class="p">,</span> <span class="n">n_recommendations</span> <span class="o">=</span> <span class="mi">10</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">"""</span>
 <span class="sd">    Generate movie recommendations based on new user ratings and a sparse similarity matrix.</span>
 
@@ -7973,10 +8750,10 @@ MovieID
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [14]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-python"><pre><span></span><span class="c1"># get the movie titles by movie ids</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># get the movie titles by movie ids</span>
 <span class="c1"># keep the order of movie ids</span>
 <span class="k">def</span> <span class="nf">get_movie_titles</span><span class="p">(</span><span class="n">movie_ids</span><span class="p">,</span> <span class="n">movies</span><span class="p">):</span>
     <span class="c1"># Create a dictionary to map MovieId to rows</span>
@@ -8009,10 +8786,10 @@ MovieID
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [15]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-python"><pre><span></span><span class="c1"># get user rating for user 1181</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># get user rating for user 1181</span>
 <span class="n">user_1181_ratings</span> <span class="o">=</span> <span class="n">item_feature_matrix</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">1181</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="c1"># count number of 0 in user rating</span>
 <span class="c1">#print(user_1181_ratings[user_1181_ratings == 0].count())</span>
@@ -8049,7 +8826,7 @@ m389 (4.11)
 </div>
 </div>
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[ ]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[15]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <div class="colab-df-container" id="df-d5bb74cf-790a-4d7f-84f6-c02733a24e9e">
 <div>
@@ -8347,10 +9124,10 @@ m389 (4.11)
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [16]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-python"><pre><span></span><span class="c1"># get user rating for user 1351</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1"># get user rating for user 1351</span>
 <span class="n">user_1351_ratings</span> <span class="o">=</span> <span class="n">item_feature_matrix</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">1351</span><span class="p">]</span><span class="o">.</span><span class="n">fillna</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
 <span class="n">movie_ids</span><span class="p">,</span> <span class="n">scores</span> <span class="o">=</span> <span class="n">recommend_movies</span><span class="p">(</span><span class="n">user_1351_ratings</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">similarity_matrix_top30_df</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
@@ -8385,7 +9162,7 @@ m2339 (5.00)
 </div>
 </div>
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[ ]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[16]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <div class="colab-df-container" id="df-612bf8f1-e713-4486-aa1a-cbd49db18ac5">
 <div>
@@ -8683,10 +9460,10 @@ m2339 (5.00)
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [ ]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [17]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-python"><pre><span></span><span class="c1">#create a user rating vector 3707 x 1, populate with 0</span>
+<div class="highlight hl-ipython3"><pre><span></span><span class="c1">#create a user rating vector 3707 x 1, populate with 0</span>
 <span class="n">user_hypo_ratings</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3706</span><span class="p">)</span>
 <span class="n">user_hypo_ratings</span><span class="p">[</span><span class="mi">1481</span><span class="p">]</span> <span class="o">=</span> <span class="mi">5</span>
 <span class="n">user_hypo_ratings</span><span class="p">[</span><span class="mi">1600</span><span class="p">]</span> <span class="o">=</span> <span class="mi">4</span>
@@ -8723,7 +9500,7 @@ m2590 (5.00)
 </div>
 </div>
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[ ]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[17]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <div class="colab-df-container" id="df-eda7d3d9-2947-495b-b0e3-eab95dc2147b">
 <div>
